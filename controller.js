@@ -9,6 +9,18 @@ class controller {
                 console.error('Error when sending: ', erro);
             });
         }
+
+        if (message.body === '#s' && message.quotedMsg) {
+          if(message.quotedMsg.type == 'image') { 
+            client.downloadMedia(message.quotedMsgId)
+            .then((result) => {
+                client.sendImageAsSticker(message.from, result);
+            })
+            .catch((erro) => {
+                console.error('Error when sending: ', erro);
+            });
+          }
+        }
         
         if(message.type == 'image' && message.caption == '#s') {
             client.downloadMedia(message)
@@ -154,19 +166,19 @@ class controller {
     }
 
     getCategory(message) {
-        let choice = [message.body];
-            let menuOptions = ['Dízimo', 'Oferta', 'Luz', 'Água', 'Internet', 'Celular', 'Viagem', 'Bus/metro', 'Taxi/Uber', 'Supermercado', 'Fastfood', 'Cuidado pessoal', 'Role', 'Outro'];
+      let choice = [message.body];
+      let menuOptions = ['Dízimo', 'Oferta', 'Luz', 'Água', 'Internet', 'Celular', 'Viagem', 'Bus/metro', 'Taxi/Uber', 'Supermercado', 'Fastfood', 'Cuidado pessoal', 'Role', 'Outro'];
 
-            let result = menuOptions.filter(function (item) {
-                return choice.indexOf(item) > -1;
-            });
-            if(result.length === 1) {
-                storage[message.from].stage = "2";
-                storage[message.from].category = message.body;
-                console.log(storage);
-                return true;
-            };
-            return false;        
+      let result = menuOptions.filter(function (item) {
+        return choice.indexOf(item) > -1;
+      });
+      if(result.length === 1) {
+        storage[message.from].stage = "2";
+        storage[message.from].category = message.body;
+        console.log(storage);
+        return true;
+      };
+      return false;        
     }
 }
 
