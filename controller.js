@@ -111,25 +111,35 @@ class controller {
 
         switch(this.getStage(message.from)) {
             case "1":
-                if(this.getCategory(message)) {
-                  client.sendText(message.from, "Digite o valor do registro (use ponto no lugar de vírgula):")
-                  .catch((erro) => {
-                      console.error('Error when sending: ', erro);
-                  });
-                } else {
-                  client.sendText(message.from, "Opção inválida, selecione outra vez")
-                  .catch((erro) => {
-                      console.error('Error when sending: ', erro);
-                  });
-                }
-                break;
+              if(this.getCategory(message)) {
+                client.sendText(message.from, "Digite o valor do registro (use ponto no lugar de vírgula):")
+                .catch((erro) => {
+                    console.error('Error when sending: ', erro);
+                });
+              }
+              break;
 
             case "2":
-              
-                break;
+              if(this.getValue(message)) {
+                client.sendText(message.from, "Insira uma descrição para o registro:")
+                .catch((erro) => {
+                    console.error('Error when sending: ', erro);
+                });
+              } else {
+                client.sendText(message.from, "Inserção inválida, digite um número: ")
+                .catch((erro) => {
+                    console.error('Error when sending: ', erro);
+                });
+              }              
+              break;
 
             case "3":
-                break;
+              this.getDescription(message);
+              client.sendText(message.from, `*Confirme* (Sim/Não)\n\n Categoria: ${storage[message.from].category}\n Valor: ${storage[message.from].value}\n Descrição: ${storage[message.from].description}`)
+                .catch((erro) => {
+                    console.error('Error when sending: ', erro);
+                });
+              break;
 
             case "4":
                 break;
@@ -177,8 +187,28 @@ class controller {
         storage[message.from].category = message.body;
         console.log(storage);
         return true;
-      };
+      }
       return false;        
+    }
+
+    getValue(message) {
+      let value = message.body;
+
+      if(!isNaN(value)) {
+        storage[message.from].stage = "3";
+        storage[message.from].value = value;
+        console.log(storage);
+        return true;
+      }
+      return false;  
+    }
+
+    getDescription(message) {
+      let description = message.body;
+
+      storage[message.from].stage = "4";
+      storage[message.from].description = description;
+      console.log(storage);
     }
 }
 
