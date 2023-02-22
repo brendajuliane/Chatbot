@@ -135,14 +135,28 @@ class controller {
 
             case "3":
               this.getDescription(message);
-              client.sendText(message.from, `*Confirme* (Sim/Não)\n\n Categoria: ${storage[message.from].category}\n Valor: ${storage[message.from].value}\n Descrição: ${storage[message.from].description}`)
+              client.sendText(message.from, `*Confirme* (S/N)\n\n Categoria: ${storage[message.from].category}\n Valor: ${storage[message.from].value}\n Descrição: ${storage[message.from].description}`)
                 .catch((erro) => {
                     console.error('Error when sending: ', erro);
                 });
               break;
 
             case "4":
-                break;
+              if(message.body == 'S') {
+                //função para inserir na planilha
+                client.sendText(message.from, "Registro finalizado com sucesso :)")
+                  .catch((erro) => {
+                    console.error('Error when sending: ', erro);
+                  });
+                  this.restartStage(message.from);         
+              } else {
+                this.restartStage(message.from);
+                client.sendText(message.from, "Registro cancelado")
+                .catch((erro) => {
+                  console.error('Error when sending: ', erro);
+                });    
+              }
+              break;
 
             default:
                 console.log(`Stage is ${this.getStage(message.from)}`);
@@ -165,6 +179,15 @@ class controller {
           description: null
         };
       }
+    }
+
+    restartStage(from) {
+      storage[from] = {
+        stage: "0",
+        category: null,
+        value: null,
+        description: null
+      };
     }
 
     getStage(from) {
