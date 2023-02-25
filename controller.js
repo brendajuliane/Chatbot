@@ -1,3 +1,5 @@
+const sheetsController = require('./sheetsControler.js');
+
 let storage = [];
 
 class controller {
@@ -143,18 +145,21 @@ class controller {
 
             case "4":
               if(message.body == 'S') {
-                //função para inserir na planilha
-                client.sendText(message.from, "Registro finalizado com sucesso :)")
+                sheetsController.insertRegister(storage[message.from], () => {
+                  client.sendText(message.from, "Registro finalizado com sucesso :)")
                   .catch((erro) => {
                     console.error('Error when sending: ', erro);
                   });
-                  this.restartStage(message.from);         
+                  this.restartStage(message.from);
+                })
+
               } else {
                 this.restartStage(message.from);
                 client.sendText(message.from, "Registro cancelado")
                 .catch((erro) => {
                   console.error('Error when sending: ', erro);
-                });    
+                }); 
+
               }
               break;
 
